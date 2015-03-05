@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>HTML5 Server Side Event Example in Go</title>
+    <style>
+        .dv {
+            border: 2px solid cadetblue;
+            min-height: 50px;
+            width: 800px;
+            margin: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .btn_dv{
+            border: 2px solid cadetblue;
+            width: 800px;
+            margin: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<h2>Hello ! HTML5 SSE</h2>
+Hi, {{.}}, here are some facinating messages about the current time <br/>
+
+<div class="btn_dv" style="height:20px;">
+<input type="button" value="Start" onclick="start()">
+<input type="button" value="Stop" onclick="stop()">
+<input type="button" value="Clear" onclick="clearContent()">
+</div>
+<div id="content" class="dv">
+
+</div>
+<script type="text/javascript">
+    var source;
+    function start(){
+        if(source){
+            return;
+        }
+        source = new EventSource('/events/');
+        source.onmessage = function (e) {
+            document.getElementById("content").innerHTML += e.data + '<br>';
+        };
+
+        source.onopen = function (e) {
+            console.log("event source open");
+            document.getElementById("content").innerHTML += 'event source open<br><br>';
+        };
+
+        source.onerror = function (e) {
+            console.log("event source error");
+            document.getElementById("content").innerHTML += 'event source error<br><br>';
+        };
+    }
+
+    function stop(){
+        if(source){
+            source.close();
+            source = null;
+        }
+    }
+
+    function clearContent(){
+        document.getElementById("content").innerHTML = 'Cleared<br/><br/>';
+    }
+
+</script>
+</body>
+</html>
